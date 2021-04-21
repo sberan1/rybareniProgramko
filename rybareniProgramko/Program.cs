@@ -6,7 +6,9 @@ namespace rybareniProgramko
     {
         static void Main(string[] args)
         {
-
+            Rybnicek rybnik = new Rybnicek();
+            int [,] tu = rybnik.vytvoreniRybnicku(1000, 1000, 10000);
+            rybnik.vhodneLoviste(30,30, tu);
         }
     }
 
@@ -30,11 +32,11 @@ namespace rybareniProgramko
             do
             {
                 Random rnd = new Random();
-                int pravdepodobnost = rnd.Next(0, 2);
+                int ryba = rnd.Next(0, 2);
                 if (x < rybnik.GetLength(0))
                 {
-                    rybnik[y, x] = pravdepodobnost;
-                    pocitadlo += pravdepodobnost;
+                    rybnik[x, y] = ryba;
+                    pocitadlo += ryba;
                     x++;
                 }
                 else if (x == rybnik.GetLength(0)-1 && y == rybnik.GetUpperBound(0)-1)
@@ -53,10 +55,43 @@ namespace rybareniProgramko
             while (pocitadlo <= pocetRyb);
         }
 
-        private void hledaniVhodnehoLoviste(int velikostX, int velikostY, int[,] rybnik)
+        public void vhodneLoviste(int velikostX, int velikostY, int[,] rybnik)
         {
-            int[,] velikostLoviste = new int[velikostX, velikostY];
+            
+            int poziceX = 0;
+            int poziceY = 0;
+            int soucetRyb = 0;
+            int mezikrok;
+            int vysledneRyby = 0;
+            int poleX = rybnik.GetLength(0);
+            int poleY = rybnik.GetLength(1);
+            if (poleX < velikostX || poleY < velikostY)
+                Console.WriteLine("CHYBA");
+            for (int celkoveX = 0; celkoveX < poleX - velikostX; celkoveX++)
+            {
+                for (int celkoveY = 0; celkoveY < poleY - velikostY; celkoveY++)
+                {
+                    for (int x = 0; x < velikostX; x++)
+                    {
+                        for (int y = 0; y < velikostY; y++)
+                        {
+                            if (rybnik[x + celkoveX, y + celkoveY] == 1)
+                                soucetRyb++;
+                        }
+                    }
+                    mezikrok = soucetRyb;
+                    soucetRyb = 0;
+                    if (mezikrok > vysledneRyby)
+                    {
+                        vysledneRyby = mezikrok;
+                        poziceX = celkoveX;
+                        poziceY = celkoveY;
+                    }
+                }
+            }
+            Console.WriteLine($"Idealni loviste se nacahazi v {poziceX} a {poziceY}, obsahuje {vysledneRyby} ryb a ma rozmery {velikostX} {velikostY}");
         }
+        
     }
 }
 
